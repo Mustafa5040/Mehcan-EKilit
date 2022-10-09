@@ -1,0 +1,46 @@
+﻿<Window
+    x:Class="Mehcan_EKilit.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Mehcan_EKilit"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+
+
+    <Grid x:Name="grid_main"  Height="1080" VerticalAlignment="Bottom">
+        <Button x:Name="ders_buton_sol_alt" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="87,0,0,5" >
+            <StackPanel >
+                <SymbolIcon Symbol="Calendar" />
+                <TextBlock x:Name="ders_text"/>
+            </StackPanel>
+        </Button>
+
+        <Button x:Name="kilidi_ac_buton" Margin="0,0,0,5" Click= "kilidi_ac_buton_Click" VerticalAlignment="Bottom" HorizontalAlignment="Center" >
+            <StackPanel >
+                <SymbolIcon Symbol="Permissions" />
+                <TextBlock>Kilidi açmak için anahtar disk veya mobil anahtar kullanın.</TextBlock>
+            </StackPanel>
+        </Button>
+
+        <Button x:Name="saat_buton_sol_alt" Margin="30,0,0,5" VerticalAlignment="Bottom" HorizontalAlignment="Left" >
+            <StackPanel>
+                <SymbolIcon Symbol="Clock" />
+                <TextBlock x:Name="saat_buton_text"/>
+            </StackPanel>
+        </Button>
+
+        <Button x:Name="kapat_buton" Margin="0,0,30,5" Click="kapat_buton_Click" VerticalAlignment="Bottom" HorizontalAlignment="Right" >
+            <StackPanel>
+                <SymbolIcon Symbol="ClosePane" />
+                <TextBlock>Kapat</TextBlock>
+            </StackPanel>
+        </Button>
+
+        <Rectangle x:Name="ust_bolum_rect" RadiusX="10" RadiusY="10" Fill="#151515" HorizontalAlignment="Left" Height="124" Stroke="Black" VerticalAlignment="Top" Width="1500" RequestedTheme="Default" Margin="18,230,0,0" />
+        <SymbolIcon Symbol="People" Margin="-31,-198,31,198" />
+        <TextBlock x:Name="okul_text" Text="HAZIM KULAK ANADOLU LİSESİ" FontSize="60" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="352,257,0,0" />
+        <TextBlock HorizontalAlignment="Center" Margin="0,332,0,0" TextWrapping="Wrap" Text="11/F" VerticalAlignment="Top" FontSize="18" />
+    </Grid>
+</Window>

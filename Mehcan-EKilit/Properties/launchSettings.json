@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Mehcan-EKilit (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "Mehcan-EKilit (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

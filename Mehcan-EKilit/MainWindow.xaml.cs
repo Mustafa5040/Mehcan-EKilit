@@ -1,8 +1,7 @@
-﻿using Microsoft.UI;
+using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -43,6 +42,7 @@ namespace Mehcan_EKilit
             main_window.SetPresenter(AppWindowPresenterKind.FullScreen);
 
 
+
             main_window_presenter.IsAlwaysOnTop = true;
             main_window_presenter.IsMinimizable = false;
             main_window_presenter.IsMaximizable = false;
@@ -58,8 +58,6 @@ namespace Mehcan_EKilit
             bgwDriveDetector.DoWork += bgwDriveDetector_DoWork;
             bgwDriveDetector.RunWorkerAsync();
 
-            //Keyboard.BlockInput(true);
-
         }
 
         public void Check_teacher_usb_startup()
@@ -72,7 +70,11 @@ namespace Mehcan_EKilit
                 string current_device_letter = usbget.GetDriveLetter(device);
                 string location1 = current_device_letter + @"\mehcan.dat";
                 string location2 = current_device_letter + @"\BELGELER\mehcan.dat";
-                if (current_device_letter != null && (File.Exists(location1) || File.Exists(location2)))
+                string location3 = current_device_letter + @"\mehcan00.dat";
+                string location4 = current_device_letter + @"\BELGELER\mehcan00.dat";
+                string location5 = current_device_letter + @"\mehcan0.dat";
+                string location6 = current_device_letter + @"\BELGELER\mehcan0.dat";
+                if (current_device_letter != null && (File.Exists(location1) || File.Exists(location2) || File.Exists(location3) || File.Exists(location4) || File.Exists(location5) || File.Exists(location6)))
                 {
                     main_window.Hide();
                     Taskbar.Show();
@@ -81,12 +83,12 @@ namespace Mehcan_EKilit
                         teacher_device_ids.Add(currentusb.DeviceId);
                     }
                 }
-
             }
         }
         private void Timer_Tick(object sender, object e)
         {
             saat_buton_text.Text = DateTime.Now.ToString("HH:mm");
+
         }
         private void Lesson_timer_Tick(object sender, object e)
         {
@@ -261,8 +263,8 @@ namespace Mehcan_EKilit
             alt_grid.RowDefinitions.Add(rowDef4);
 
 
-            TextBox anahtar_textBox = new TextBox();
-            anahtar_textBox.FontSize = 22;
+            NumberBox anahtar_textBox = new NumberBox();
+            anahtar_textBox.FontSize = 23;
             anahtar_textBox.Width = 198;
             anahtar_textBox.Margin = new Thickness(0, 20, 23, 0);
             anahtar_textBox.VerticalAlignment = VerticalAlignment.Top;
@@ -353,8 +355,7 @@ namespace Mehcan_EKilit
 
 
             Button keypad_tick = new Button();
-            keypad_tick.FontFamily = new FontFamily("Segoe MDL2 Assets");
-            keypad_tick.Content = "&#xE102;";
+            keypad_tick.Content = ":)";
             keypad_tick.Width = 60;
             keypad_tick.Height = 60;
             Grid.SetRow(keypad_tick, 3);
@@ -403,7 +404,7 @@ namespace Mehcan_EKilit
             }
             void keypad_tick_Click(object sender, RoutedEventArgs e, string text_box_text)
             {
-                if (text_box_text == "123")
+                if (text_box_text == "314159265")
                 {
                     Taskbar.Show();
                     anahtar_gir_apwindow.Hide();
@@ -430,10 +431,13 @@ namespace Mehcan_EKilit
 
             string location1 = current_letter + @"\mehcan.dat";
             string location2 = current_letter + @"\BELGELER\mehcan.dat";
+            string location3 = current_letter + @"\mehcan00.dat";
+            string location4 = current_letter + @"\BELGELER\mehcan00.dat";
+            string location5 = current_letter + @"\mehcan0.dat";
+            string location6 = current_letter + @"\BELGELER\mehcan0.dat";
 
-            if (File.Exists(location1) || File.Exists(location2))
+            if (File.Exists(location1) || File.Exists(location2) || File.Exists(location3) || File.Exists(location4) || File.Exists(location5) || File.Exists(location6))
             {
-                //_apw_main.Hide();
                 main_window.Hide();
 
                 Taskbar.Show();

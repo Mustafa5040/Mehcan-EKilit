@@ -5,16 +5,20 @@
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
   xmlns:uap5="http://schemas.microsoft.com/appx/manifest/uap/windows10/5"
-  IgnorableNamespaces="uap rescap">
+  xmlns:uap4="http://schemas.microsoft.com/appx/manifest/uap/windows10/4"
+  xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3"
+  xmlns:uap2="http://schemas.microsoft.com/appx/manifest/uap/windows10/2"
+  
+  IgnorableNamespaces="uap uap5 rescap">
 
   <Identity
-    Name="0d1e7652-7d9b-45cf-9368-b8a136939f9a"
-    Publisher="CN=mdurs"
-    Version="1.0.0.0" />
+    Name="Mehcan.EKilit.Mdd"
+    Publisher="CN=mdd Software, O=mdd Corporation, C=TR"
+    Version="1.0.1.0" />
 
   <Properties>
     <DisplayName>Mehcan-EKilit</DisplayName>
-    <PublisherDisplayName>MEHCAN</PublisherDisplayName>
+    <PublisherDisplayName>mdd</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
@@ -40,22 +44,10 @@
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" />
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
       </uap:VisualElements>
-		<Extensions>
-			<uap5:Extension
-			  Category="windows.startupTask"
-			  Executable="$targetnametoken$.exe"
-			  EntryPoint="Windows.FullTrustApplication">
-				<uap5:StartupTask
-				  TaskId="MyStartupId"
-				  Enabled="true"
-				  DisplayName="Mehcan E-Kilit" />
-			</uap5:Extension>
-		</Extensions>
     </Application>
   </Applications>
-
   <Capabilities>
-    <rescap:Capability Name="runFullTrust" />
-    <uap:Capability Name="removableStorage"/>
+	  <rescap:Capability Name="runFullTrust" />
+	  <uap:Capability Name="removableStorage"/>
   </Capabilities>
 </Package>

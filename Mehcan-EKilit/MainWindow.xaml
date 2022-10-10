@@ -9,7 +9,7 @@
 
 
 
-    <Grid x:Name="grid_main"  Height="1080" VerticalAlignment="Bottom">
+    <Grid x:Name="grid_main" Height="1080" VerticalAlignment="Bottom">
         <Button x:Name="ders_buton_sol_alt" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="87,0,0,5" >
             <StackPanel >
                 <SymbolIcon Symbol="Calendar" />
@@ -37,10 +37,15 @@
                 <TextBlock>Kapat</TextBlock>
             </StackPanel>
         </Button>
-
-        <Rectangle x:Name="ust_bolum_rect" RadiusX="10" RadiusY="10" Fill="#151515" HorizontalAlignment="Left" Height="124" Stroke="Black" VerticalAlignment="Top" Width="1500" RequestedTheme="Default" Margin="18,230,0,0" />
-        <SymbolIcon Symbol="People" Margin="-31,-198,31,198" />
-        <TextBlock x:Name="okul_text" Text="HAZIM KULAK ANADOLU LİSESİ" FontSize="60" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="352,257,0,0" />
-        <TextBlock HorizontalAlignment="Center" Margin="0,332,0,0" TextWrapping="Wrap" Text="11/F" VerticalAlignment="Top" FontSize="18" />
+        <Rectangle x:Name="ust_bolum_rect" RadiusX="10" RadiusY="10" Fill="#151515" HorizontalAlignment="Left" Height="124" Stroke="Black" VerticalAlignment="Top" Width="1500" RequestedTheme="Default" Margin="20,370,20,0" >
+            <Rectangle.Shadow>
+                <ThemeShadow />
+            </Rectangle.Shadow>
+            
+        </Rectangle>
+        <SymbolIcon Symbol="People" Margin="-31,76,31,198" />
+        <TextBlock x:Name="okul_text" Text="HAZIM KULAK ANADOLU LİSESİ" FontSize="60" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="220,385,100,50" />
+        <TextBlock HorizontalAlignment="Center" Margin="0,467,0,0" TextWrapping="Wrap" Text="11/F" VerticalAlignment="Top" FontSize="18" />
+       
     </Grid>
 </Window>

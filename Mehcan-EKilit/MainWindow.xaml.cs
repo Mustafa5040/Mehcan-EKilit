@@ -17,6 +17,8 @@ namespace Mehcan_EKilit
     public sealed partial class MainWindow : Window
     {
         List<string> teacher_device_ids = new List<string>();
+        bool is_anahtar_gir_open;
+
         AppWindow main_window;
         OverlappedPresenter main_window_presenter;
         DispatcherTimer Clock_timer = new DispatcherTimer();
@@ -221,198 +223,213 @@ namespace Mehcan_EKilit
             AppWindow anahtar_gir_apwindow;
             OverlappedPresenter anahtar_gir_window_presenter;
 
-            var anahtar_gir_window = new Window();
-            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(anahtar_gir_window);
-            WindowId myWndId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hwnd);
-            anahtar_gir_apwindow = AppWindow.GetFromWindowId(myWndId);
-            anahtar_gir_window_presenter = anahtar_gir_apwindow.Presenter as OverlappedPresenter;
-            Border anahtar_gir_title_bar = new Border();
-            anahtar_gir_window.Title = "Anahtar Gir";
-            anahtar_gir_window.ExtendsContentIntoTitleBar = true;
-            SetWindowSize(hwnd, 400, 400);
-            anahtar_gir_window_presenter.IsResizable = false;
-            anahtar_gir_window_presenter.IsMaximizable = false;
-            anahtar_gir_window_presenter.IsMinimizable = false;
-            anahtar_gir_window_presenter.IsAlwaysOnTop = true;
-
-            Grid ana_grid = new Grid();
-
-            Grid alt_grid = new Grid();
-            alt_grid.Width = 200;
-            alt_grid.Height = 260;
-            alt_grid.HorizontalAlignment = HorizontalAlignment.Right;
-            alt_grid.VerticalAlignment = VerticalAlignment.Center;
-
-            ColumnDefinition colDef1 = new ColumnDefinition();
-            ColumnDefinition colDef2 = new ColumnDefinition();
-            ColumnDefinition colDef3 = new ColumnDefinition();
-
-            alt_grid.ColumnDefinitions.Add(colDef1);
-            alt_grid.ColumnDefinitions.Add(colDef2);
-            alt_grid.ColumnDefinitions.Add(colDef3);
-
-            RowDefinition rowDef1 = new RowDefinition();
-            RowDefinition rowDef2 = new RowDefinition();
-            RowDefinition rowDef3 = new RowDefinition();
-            RowDefinition rowDef4 = new RowDefinition();
-
-
-            alt_grid.RowDefinitions.Add(rowDef1);
-            alt_grid.RowDefinitions.Add(rowDef2);
-            alt_grid.RowDefinitions.Add(rowDef3);
-            alt_grid.RowDefinitions.Add(rowDef4);
-
-
-            NumberBox anahtar_textBox = new NumberBox();
-            anahtar_textBox.FontSize = 23;
-            anahtar_textBox.Width = 198;
-            anahtar_textBox.Margin = new Thickness(0, 20, 23, 0);
-            anahtar_textBox.VerticalAlignment = VerticalAlignment.Top;
-            anahtar_textBox.HorizontalAlignment = HorizontalAlignment.Right;
-            ana_grid.Children.Add(anahtar_textBox);
-
-
-            Button keypad1 = new Button();
-            keypad1.Content = "1";
-            keypad1.Width = 60;
-            keypad1.Height = 60;
-            Grid.SetRow(keypad1, 0);
-            Grid.SetColumn(keypad1, 0);
-            keypad1.Click += (sender, EventArgs) => { keypad_num_Click(sender, EventArgs, "1"); };
-
-
-            Button keypad2 = new Button();
-            keypad2.Content = "2";
-            keypad2.Width = 60;
-            keypad2.Height = 60;
-            Grid.SetRow(keypad2, 0);
-            Grid.SetColumn(keypad2, 1);
-            keypad2.Click += (sender, EventArgs) => { keypad_num_Click(sender, EventArgs, "2"); };
-
-            Button keypad3 = new Button();
-            keypad3.Content = "3";
-            keypad3.Width = 60;
-            keypad3.Height = 60;
-            Grid.SetRow(keypad3, 0);
-            Grid.SetColumn(keypad3, 2);
-            keypad3.Click += (sender, EventArgs) => { keypad_num_Click(sender, EventArgs, "3"); };
-
-            Button keypad4 = new Button();
-            keypad4.Content = "4";
-            keypad4.Width = 60;
-            keypad4.Height = 60;
-            Grid.SetRow(keypad4, 1);
-            Grid.SetColumn(keypad4, 0);
-            keypad4.Click += (sender, EventArgs) => { keypad_num_Click(sender, EventArgs, "4"); };
-
-            Button keypad5 = new Button();
-            keypad5.Content = "5";
-            keypad5.Width = 60;
-            keypad5.Height = 60;
-            Grid.SetRow(keypad5, 1);
-            Grid.SetColumn(keypad5, 1);
-            keypad5.Click += (sender, EventArgs) => { keypad_num_Click(sender, EventArgs, "5"); };
-
-            Button keypad6 = new Button();
-            keypad6.Content = "6";
-            keypad6.Width = 60;
-            keypad6.Height = 60;
-            Grid.SetRow(keypad6, 1);
-            Grid.SetColumn(keypad6, 2);
-            keypad6.Click += (sender, EventArgs) => { keypad_num_Click(sender, EventArgs, "6"); };
-
-            Button keypad7 = new Button();
-            keypad7.Content = "7";
-            keypad7.Width = 60;
-            keypad7.Height = 60;
-            Grid.SetRow(keypad7, 2);
-            Grid.SetColumn(keypad7, 0);
-            keypad7.Click += (sender, EventArgs) => { keypad_num_Click(sender, EventArgs, "7"); };
-
-            Button keypad8 = new Button();
-            keypad8.Content = "8";
-            keypad8.Width = 60;
-            keypad8.Height = 60;
-            Grid.SetRow(keypad8, 2);
-            Grid.SetColumn(keypad8, 1);
-            keypad8.Click += (sender, EventArgs) => { keypad_num_Click(sender, EventArgs, "8"); };
-
-            Button keypad9 = new Button();
-            keypad9.Content = "9";
-            keypad9.Width = 60;
-            keypad9.Height = 60;
-            Grid.SetRow(keypad9, 2);
-            Grid.SetColumn(keypad9, 2);
-            keypad9.Click += (sender, EventArgs) => { keypad_num_Click(sender, EventArgs, "9"); };
-
-            Button keypad0 = new Button();
-            keypad0.Content = "0";
-            keypad0.Width = 60;
-            keypad0.Height = 60;
-            Grid.SetRow(keypad0, 3);
-            Grid.SetColumn(keypad0, 1);
-            keypad0.Click += (sender, EventArgs) => { keypad_num_Click(sender, EventArgs, "0"); };
-
-
-            Button keypad_tick = new Button();
-            keypad_tick.Content = ":)";
-            keypad_tick.Width = 60;
-            keypad_tick.Height = 60;
-            Grid.SetRow(keypad_tick, 3);
-            Grid.SetColumn(keypad_tick, 2);
-            keypad_tick.Click += (sender, EventArgs) => { keypad_tick_Click(sender, EventArgs, anahtar_textBox.Text); };
-
-
-            Button keypad_back = new Button();
-            keypad_back.Content = "<";
-            keypad_back.Width = 60;
-            keypad_back.Height = 60;
-            Grid.SetRow(keypad_back, 3);
-            Grid.SetColumn(keypad_back, 0);
-            keypad_back.Click += back_button_Click;
-
-
-            alt_grid.Children.Add(keypad1);
-            alt_grid.Children.Add(keypad2);
-            alt_grid.Children.Add(keypad3);
-            alt_grid.Children.Add(keypad4);
-            alt_grid.Children.Add(keypad5);
-            alt_grid.Children.Add(keypad6);
-            alt_grid.Children.Add(keypad7);
-            alt_grid.Children.Add(keypad8);
-            alt_grid.Children.Add(keypad9);
-            alt_grid.Children.Add(keypad0);
-            alt_grid.Children.Add(keypad_tick);
-            alt_grid.Children.Add(keypad_back);
-            alt_grid.Margin = new Thickness(0, 30, 20, 0);
-
-            ana_grid.Children.Add(alt_grid);
-
-            anahtar_gir_window.Content = ana_grid;
-            anahtar_gir_window.Activate();
-            void keypad_num_Click(object sender, RoutedEventArgs e, string number)
+            if(!is_anahtar_gir_open)
             {
-                anahtar_textBox.Text += number;
-            }
-            void back_button_Click(object sender, RoutedEventArgs e)
-            {
-                if (anahtar_textBox.Text.Length != 0)
+                is_anahtar_gir_open = true;
+                var anahtar_gir_window = new Window();
+                var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(anahtar_gir_window);
+                WindowId myWndId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hwnd);
+                anahtar_gir_apwindow = AppWindow.GetFromWindowId(myWndId);
+                anahtar_gir_window_presenter = anahtar_gir_apwindow.Presenter as OverlappedPresenter;
+                Border anahtar_gir_title_bar = new Border();
+                anahtar_gir_window.Title = "Anahtar Gir";
+                anahtar_gir_window.ExtendsContentIntoTitleBar = true;
+                SetWindowSize(hwnd, 400, 400);
+                anahtar_gir_window_presenter.IsResizable = false;
+                anahtar_gir_window_presenter.IsMaximizable = false;
+                anahtar_gir_window_presenter.IsMinimizable = false;
+                anahtar_gir_window_presenter.IsAlwaysOnTop = true;
+                anahtar_gir_window.Closed += Anahtar_gir_window_Closed;
+
+                Grid ana_grid = new Grid();
+
+                Grid alt_grid = new Grid();
+                alt_grid.Width = 200;
+                alt_grid.Height = 260;
+                alt_grid.HorizontalAlignment = HorizontalAlignment.Right;
+                alt_grid.VerticalAlignment = VerticalAlignment.Center;
+
+                ColumnDefinition colDef1 = new ColumnDefinition();
+                ColumnDefinition colDef2 = new ColumnDefinition();
+                ColumnDefinition colDef3 = new ColumnDefinition();
+
+                alt_grid.ColumnDefinitions.Add(colDef1);
+                alt_grid.ColumnDefinitions.Add(colDef2);
+                alt_grid.ColumnDefinitions.Add(colDef3);
+
+                RowDefinition rowDef1 = new RowDefinition();
+                RowDefinition rowDef2 = new RowDefinition();
+                RowDefinition rowDef3 = new RowDefinition();
+                RowDefinition rowDef4 = new RowDefinition();
+
+
+                alt_grid.RowDefinitions.Add(rowDef1);
+                alt_grid.RowDefinitions.Add(rowDef2);
+                alt_grid.RowDefinitions.Add(rowDef3);
+                alt_grid.RowDefinitions.Add(rowDef4);
+
+
+                NumberBox anahtar_textBox = new NumberBox();
+                anahtar_textBox.FontSize = 23;
+                anahtar_textBox.Width = 198;
+                anahtar_textBox.Margin = new Thickness(0, 20, 23, 0);
+                anahtar_textBox.VerticalAlignment = VerticalAlignment.Top;
+                anahtar_textBox.HorizontalAlignment = HorizontalAlignment.Right;
+                ana_grid.Children.Add(anahtar_textBox);
+
+
+                Button keypad1 = new Button();
+                keypad1.Content = "1";
+                keypad1.Width = 60;
+                keypad1.Height = 60;
+                Grid.SetRow(keypad1, 0);
+                Grid.SetColumn(keypad1, 0);
+                keypad1.Click += (sender, EventArgs) => { keypad_num_Click(sender, EventArgs, "1"); };
+
+
+                Button keypad2 = new Button();
+                keypad2.Content = "2";
+                keypad2.Width = 60;
+                keypad2.Height = 60;
+                Grid.SetRow(keypad2, 0);
+                Grid.SetColumn(keypad2, 1);
+                keypad2.Click += (sender, EventArgs) => { keypad_num_Click(sender, EventArgs, "2"); };
+
+                Button keypad3 = new Button();
+                keypad3.Content = "3";
+                keypad3.Width = 60;
+                keypad3.Height = 60;
+                Grid.SetRow(keypad3, 0);
+                Grid.SetColumn(keypad3, 2);
+                keypad3.Click += (sender, EventArgs) => { keypad_num_Click(sender, EventArgs, "3"); };
+
+                Button keypad4 = new Button();
+                keypad4.Content = "4";
+                keypad4.Width = 60;
+                keypad4.Height = 60;
+                Grid.SetRow(keypad4, 1);
+                Grid.SetColumn(keypad4, 0);
+                keypad4.Click += (sender, EventArgs) => { keypad_num_Click(sender, EventArgs, "4"); };
+
+                Button keypad5 = new Button();
+                keypad5.Content = "5";
+                keypad5.Width = 60;
+                keypad5.Height = 60;
+                Grid.SetRow(keypad5, 1);
+                Grid.SetColumn(keypad5, 1);
+                keypad5.Click += (sender, EventArgs) => { keypad_num_Click(sender, EventArgs, "5"); };
+
+                Button keypad6 = new Button();
+                keypad6.Content = "6";
+                keypad6.Width = 60;
+                keypad6.Height = 60;
+                Grid.SetRow(keypad6, 1);
+                Grid.SetColumn(keypad6, 2);
+                keypad6.Click += (sender, EventArgs) => { keypad_num_Click(sender, EventArgs, "6"); };
+
+                Button keypad7 = new Button();
+                keypad7.Content = "7";
+                keypad7.Width = 60;
+                keypad7.Height = 60;
+                Grid.SetRow(keypad7, 2);
+                Grid.SetColumn(keypad7, 0);
+                keypad7.Click += (sender, EventArgs) => { keypad_num_Click(sender, EventArgs, "7"); };
+
+                Button keypad8 = new Button();
+                keypad8.Content = "8";
+                keypad8.Width = 60;
+                keypad8.Height = 60;
+                Grid.SetRow(keypad8, 2);
+                Grid.SetColumn(keypad8, 1);
+                keypad8.Click += (sender, EventArgs) => { keypad_num_Click(sender, EventArgs, "8"); };
+
+                Button keypad9 = new Button();
+                keypad9.Content = "9";
+                keypad9.Width = 60;
+                keypad9.Height = 60;
+                Grid.SetRow(keypad9, 2);
+                Grid.SetColumn(keypad9, 2);
+                keypad9.Click += (sender, EventArgs) => { keypad_num_Click(sender, EventArgs, "9"); };
+
+                Button keypad0 = new Button();
+                keypad0.Content = "0";
+                keypad0.Width = 60;
+                keypad0.Height = 60;
+                Grid.SetRow(keypad0, 3);
+                Grid.SetColumn(keypad0, 1);
+                keypad0.Click += (sender, EventArgs) => { keypad_num_Click(sender, EventArgs, "0"); };
+
+
+                Button keypad_tick = new Button();
+                keypad_tick.Content = ":)";
+                keypad_tick.Width = 60;
+                keypad_tick.Height = 60;
+                Grid.SetRow(keypad_tick, 3);
+                Grid.SetColumn(keypad_tick, 2);
+                keypad_tick.Click += (sender, EventArgs) => { keypad_tick_Click(sender, EventArgs, anahtar_textBox.Text); };
+
+
+                Button keypad_back = new Button();
+                keypad_back.Content = "<";
+                keypad_back.Width = 60;
+                keypad_back.Height = 60;
+                Grid.SetRow(keypad_back, 3);
+                Grid.SetColumn(keypad_back, 0);
+                keypad_back.Click += back_button_Click;
+
+
+                alt_grid.Children.Add(keypad1);
+                alt_grid.Children.Add(keypad2);
+                alt_grid.Children.Add(keypad3);
+                alt_grid.Children.Add(keypad4);
+                alt_grid.Children.Add(keypad5);
+                alt_grid.Children.Add(keypad6);
+                alt_grid.Children.Add(keypad7);
+                alt_grid.Children.Add(keypad8);
+                alt_grid.Children.Add(keypad9);
+                alt_grid.Children.Add(keypad0);
+                alt_grid.Children.Add(keypad_tick);
+                alt_grid.Children.Add(keypad_back);
+                alt_grid.Margin = new Thickness(0, 30, 20, 0);
+
+                ana_grid.Children.Add(alt_grid);
+
+                anahtar_gir_window.Content = ana_grid;
+                anahtar_gir_window.Activate();
+                void keypad_num_Click(object sender, RoutedEventArgs e, string number)
                 {
-                    anahtar_textBox.Text = anahtar_textBox.Text.Remove(anahtar_textBox.Text.Length - 1);
+                    anahtar_textBox.Text += number;
                 }
-
-            }
-            void keypad_tick_Click(object sender, RoutedEventArgs e, string text_box_text)
-            {
-                if (text_box_text == "314159265")
+                void back_button_Click(object sender, RoutedEventArgs e)
                 {
-                    Taskbar.Show();
-                    anahtar_gir_apwindow.Hide();
-                    main_window.Hide();
+                    if (anahtar_textBox.Text.Length != 0)
+                    {
+                        anahtar_textBox.Text = anahtar_textBox.Text.Remove(anahtar_textBox.Text.Length - 1);
+                    }
+
                 }
-                anahtar_textBox.Text = "";
+                void keypad_tick_Click(object sender, RoutedEventArgs e, string text_box_text)
+                {
+                    if (text_box_text == "314159265")
+                    {
+                        Taskbar.Show();
+                        anahtar_gir_apwindow.Hide();
+                        main_window.Hide();
+                    }
+                    anahtar_textBox.Text = "";
+                }
+             
             }
+            
         }
+
+        private void Anahtar_gir_window_Closed(object sender, WindowEventArgs args)
+        {
+            is_anahtar_gir_open = false;
+            throw new NotImplementedException();
+            
+        }
+
         private void SetWindowSize(IntPtr hwnd, int width, int height)
         {
             // Win32 uses pixels and WinUI 3 uses effective pixels, so you should apply the DPI scale factor

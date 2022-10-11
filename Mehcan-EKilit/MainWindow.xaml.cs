@@ -18,29 +18,26 @@ namespace Mehcan_EKilit
     {
         List<string> teacher_device_ids = new List<string>();
         bool is_anahtar_gir_open;
-
+        IntPtr hwnd_main;
         AppWindow main_window;
         OverlappedPresenter main_window_presenter;
         DispatcherTimer Clock_timer = new DispatcherTimer();
         DispatcherTimer Lesson_timer = new DispatcherTimer();
         BackgroundWorker bgwDriveDetector = new BackgroundWorker();
-        public OverlappedPresenter GetAppWindowAndPresenter()
-        {
-            var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
-            WindowId main_window_id = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hWnd);
 
-            main_window = AppWindow.GetFromWindowId(main_window_id);
-            main_window_presenter = main_window.Presenter as OverlappedPresenter;
-            return main_window_presenter;
-        }
         public MainWindow()
         {
             var teacher_devices = new List<string>();
 
             this.InitializeComponent();
+            hwnd_main = WinRT.Interop.WindowNative.GetWindowHandle(this);
+            WindowId main_window_id = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hwnd_main);
 
-            main_window_presenter = GetAppWindowAndPresenter();
-            main_window = GetAppWindowForCurrentWindow();
+            main_window = AppWindow.GetFromWindowId(main_window_id);
+            main_window_presenter = main_window.Presenter as OverlappedPresenter;
+
+            SetWindowSize(hwnd_main,1920, 1080,1,false);
+
             main_window.SetPresenter(AppWindowPresenterKind.FullScreen);
 
 
@@ -48,7 +45,6 @@ namespace Mehcan_EKilit
             main_window_presenter.IsAlwaysOnTop = true;
             main_window_presenter.IsMinimizable = false;
             main_window_presenter.IsMaximizable = false;
-
             Clock_timer.Tick += Timer_Tick;
             Clock_timer.Interval = new TimeSpan(0, 0, 1);
             Clock_timer.Start();
@@ -223,7 +219,7 @@ namespace Mehcan_EKilit
             AppWindow anahtar_gir_apwindow;
             OverlappedPresenter anahtar_gir_window_presenter;
 
-            if(!is_anahtar_gir_open)
+            if (!is_anahtar_gir_open)
             {
                 is_anahtar_gir_open = true;
                 var anahtar_gir_window = new Window();
@@ -234,7 +230,12 @@ namespace Mehcan_EKilit
                 Border anahtar_gir_title_bar = new Border();
                 anahtar_gir_window.Title = "Anahtar Gir";
                 anahtar_gir_window.ExtendsContentIntoTitleBar = true;
-                SetWindowSize(hwnd, 400, 400);
+                SetWindowSize(hwnd_main, 1920, 1080, 3,false);
+                SetWindowSize(hwnd, 400, 400, 1,true);
+               
+                
+                
+                
                 anahtar_gir_window_presenter.IsResizable = false;
                 anahtar_gir_window_presenter.IsMaximizable = false;
                 anahtar_gir_window_presenter.IsMinimizable = false;
@@ -415,33 +416,57 @@ namespace Mehcan_EKilit
                         Taskbar.Show();
                         anahtar_gir_apwindow.Hide();
                         main_window.Hide();
+                        is_anahtar_gir_open = false;
+                        SetWindowSize(hwnd_main, 1920, 1080, 1, false);
                     }
                     anahtar_textBox.Text = "";
+                    
                 }
-             
+
             }
-            
+
         }
 
         private void Anahtar_gir_window_Closed(object sender, WindowEventArgs args)
         {
             is_anahtar_gir_open = false;
+            SetWindowSize(hwnd_main, 19520, 1080, 1,false);
             throw new NotImplementedException();
-            
         }
 
-        private void SetWindowSize(IntPtr hwnd, int width, int height)
+        public void SetWindowSize(IntPtr hwnd, int width, int height,int istopmost,bool isdpiscalingenabled)
         {
-            // Win32 uses pixels and WinUI 3 uses effective pixels, so you should apply the DPI scale factor
-            var dpi = PInvoke.User32.GetDpiForWindow(hwnd);
-            float scalingFactor = (float)dpi / 96;
-            width = (int)(width * scalingFactor);
-            height = (int)(height * scalingFactor);
-
-            PInvoke.User32.SetWindowPos(hwnd, PInvoke.User32.SpecialWindowHandles.HWND_TOP,
+            if(isdpiscalingenabled)
+            {
+                var dpi = PInvoke.User32.GetDpiForWindow(hwnd);
+                float scalingFactor = (float)dpi / 96;
+                width = (int)(width * scalingFactor);
+                height = (int)(height * scalingFactor);
+            }
+            
+            
+            if(istopmost == 1)
+            {
+                PInvoke.User32.SetWindowPos(hwnd, PInvoke.User32.SpecialWindowHandles.HWND_TOPMOST,
                                         0, 0, width, height,
                                         PInvoke.User32.SetWindowPosFlags.SWP_NOMOVE);
+            }
+            else if(istopmost == 2)
+            {
+                PInvoke.User32.SetWindowPos(hwnd, PInvoke.User32.SpecialWindowHandles.HWND_TOP,
+                                        0, 0, width, height,
+                                        PInvoke.User32.SetWindowPosFlags.SWP_NOMOVE);
+            }
+            else if (istopmost == 3)
+            {
+                PInvoke.User32.SetWindowPos(hwnd, PInvoke.User32.SpecialWindowHandles.HWND_NOTOPMOST,
+                                        0, 0, width, height,
+                                        PInvoke.User32.SetWindowPosFlags.SWP_NOMOVE);
+            }
+
+
         }
+ 
         private void DeviceInsertedEvent(object sender, EventArrivedEventArgs e)
         {
             string current_letter = e.NewEvent.Properties["DriveName"].Value.ToString();
@@ -456,7 +481,6 @@ namespace Mehcan_EKilit
             if (File.Exists(location1) || File.Exists(location2) || File.Exists(location3) || File.Exists(location4) || File.Exists(location5) || File.Exists(location6))
             {
                 main_window.Hide();
-
                 Taskbar.Show();
 
                 foreach (USBDeviceInfo currentusb in GetUSBDevices())
@@ -485,13 +509,13 @@ namespace Mehcan_EKilit
             List<string> paired_teacher_usb_ids = new List<string>();
 
             var current_devices = GetUSBDevices();
-
             if (current_devices.Count == 0 || current_devices == null)
             {
                 main_window.Show();
                 Taskbar.Hide();
             }
-            else if (current_devices != null && current_devices.Count > 0)
+
+            else if (current_devices != null && current_devices.Count != 0)
             {
                 foreach (USBDeviceInfo currentusb in current_devices)
                 {

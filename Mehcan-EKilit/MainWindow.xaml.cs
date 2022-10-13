@@ -18,6 +18,9 @@ namespace Mehcan_EKilit
     {
         List<string> teacher_device_ids = new List<string>();
         bool is_anahtar_gir_open;
+        bool is_opened_via_password;
+
+
         IntPtr hwnd_main;
         AppWindow main_window;
         OverlappedPresenter main_window_presenter;
@@ -417,7 +420,8 @@ namespace Mehcan_EKilit
                         anahtar_gir_apwindow.Hide();
                         main_window.Hide();
                         is_anahtar_gir_open = false;
-                        SetWindowSize(hwnd_main, 1920, 1080, 1, false);
+                        SetWindowSize(hwnd_main,1920,1080,1,false);
+                        is_opened_via_password = true;
                     }
                     anahtar_textBox.Text = "";
                     
@@ -509,13 +513,8 @@ namespace Mehcan_EKilit
             List<string> paired_teacher_usb_ids = new List<string>();
 
             var current_devices = GetUSBDevices();
-            if (current_devices.Count == 0 || current_devices == null)
-            {
-                main_window.Show();
-                Taskbar.Hide();
-            }
 
-            else if (current_devices != null && current_devices.Count != 0)
+            if (current_devices != null && current_devices.Count != 0)
             {
                 foreach (USBDeviceInfo currentusb in current_devices)
                 {
@@ -529,15 +528,13 @@ namespace Mehcan_EKilit
                         }
                     }
                 }
-
-                if (paired_teacher_usb_ids.Count == 0)
-                {
-                    main_window.Show();
-                    Taskbar.Hide();
-                    teacher_device_ids.Clear();
-                }
             }
-
+            if (paired_teacher_usb_ids.Count == 0 && is_opened_via_password != true)
+            {
+                main_window.Show();
+                Taskbar.Hide();
+                teacher_device_ids.Clear();
+            }
             var difference = paired_teacher_usb_ids.Except(teacher_device_ids);
             difference = difference.ToList();
 

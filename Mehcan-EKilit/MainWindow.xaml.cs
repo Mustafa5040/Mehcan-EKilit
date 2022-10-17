@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Management;
 using System.Runtime.InteropServices;
+using WinRT;
 
 namespace Mehcan_EKilit
 {
@@ -19,7 +20,10 @@ namespace Mehcan_EKilit
         List<string> teacher_device_ids = new List<string>();
         bool is_anahtar_gir_open;
         bool is_opened_via_password;
-
+        WindowsSystemDispatcherQueueHelper m_wsdqHelper; // See separate sample below for implementation
+        Microsoft.UI.Composition.SystemBackdrops.MicaController m_micaController;
+        Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController m_acrylicController;
+        Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration m_configurationSource;
 
         IntPtr hwnd_main;
         AppWindow main_window;
@@ -39,11 +43,11 @@ namespace Mehcan_EKilit
             main_window = AppWindow.GetFromWindowId(main_window_id);
             main_window_presenter = main_window.Presenter as OverlappedPresenter;
 
-            SetWindowSize(hwnd_main,1920, 1080,1,false);
+            SetWindowSize(hwnd_main, 1920, 1080, 1, false);
 
             main_window.SetPresenter(AppWindowPresenterKind.FullScreen);
 
-
+            TrySetAcrylicBackdrop();
 
             main_window_presenter.IsAlwaysOnTop = true;
             main_window_presenter.IsMinimizable = false;
@@ -59,6 +63,70 @@ namespace Mehcan_EKilit
             bgwDriveDetector.DoWork += bgwDriveDetector_DoWork;
             bgwDriveDetector.RunWorkerAsync();
 
+            bool TrySetAcrylicBackdrop()
+            {
+                if (Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.IsSupported())
+                {
+                    m_wsdqHelper = new WindowsSystemDispatcherQueueHelper();
+                    m_wsdqHelper.EnsureWindowsSystemDispatcherQueueController();
+
+                    // Hooking up the policy object
+                    m_configurationSource = new Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration();
+                    this.Activated += Window_Activated;
+                    this.Closed += Window_Closed;
+                    ((FrameworkElement)this.Content).ActualThemeChanged += Window_ThemeChanged;
+
+                    // Initial configuration state.
+                    m_configurationSource.IsInputActive = true;
+                    SetConfigurationSourceTheme();
+
+                    m_acrylicController = new Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController();
+
+                    // Enable the system backdrop.
+                    // Note: Be sure to have "using WinRT;" to support the Window.As<...>() call.
+                    m_acrylicController.AddSystemBackdropTarget(this.As<Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop>());
+                    m_acrylicController.SetSystemBackdropConfiguration(m_configurationSource);
+                    return true; // succeeded
+                }
+
+                return false; // Acrylic is not supported on this system
+            }
+
+            void Window_Activated(object sender, WindowActivatedEventArgs args)
+            {
+                m_configurationSource.IsInputActive = args.WindowActivationState != WindowActivationState.Deactivated;
+            }
+
+            void Window_Closed(object sender, WindowEventArgs args)
+            {
+                // Make sure any Mica/Acrylic controller is disposed so it doesn't try to
+                // use this closed window.
+                if (m_acrylicController != null)
+                {
+                    m_acrylicController.Dispose();
+                    m_acrylicController = null;
+                }
+                this.Activated -= Window_Activated;
+                m_configurationSource = null;
+            }
+
+            void Window_ThemeChanged(FrameworkElement sender, object args)
+            {
+                if (m_configurationSource != null)
+                {
+                    SetConfigurationSourceTheme();
+                }
+            }
+
+            void SetConfigurationSourceTheme()
+            {
+                switch (((FrameworkElement)this.Content).ActualTheme)
+                {
+                    case ElementTheme.Dark: m_configurationSource.Theme = Microsoft.UI.Composition.SystemBackdrops.SystemBackdropTheme.Dark; break;
+                    case ElementTheme.Light: m_configurationSource.Theme = Microsoft.UI.Composition.SystemBackdrops.SystemBackdropTheme.Light; break;
+                    case ElementTheme.Default: m_configurationSource.Theme = Microsoft.UI.Composition.SystemBackdrops.SystemBackdropTheme.Default; break;
+                }
+            }
         }
 
         public void Check_teacher_usb_startup()
@@ -169,6 +237,42 @@ namespace Mehcan_EKilit
 
             return AppWindow.GetFromWindowId(myWndId);
         }
+        public class WindowsSystemDispatcherQueueHelper
+        {
+            [StructLayout(LayoutKind.Sequential)]
+            struct DispatcherQueueOptions
+            {
+                internal int dwSize;
+                internal int threadType;
+                internal int apartmentType;
+            }
+
+            [DllImport("CoreMessaging.dll")]
+            private static extern int CreateDispatcherQueueController([In] DispatcherQueueOptions options, [In, Out, MarshalAs(UnmanagedType.IUnknown)] ref object dispatcherQueueController);
+
+            object m_dispatcherQueueController = null;
+            public void EnsureWindowsSystemDispatcherQueueController()
+            {
+                if (Windows.System.DispatcherQueue.GetForCurrentThread() != null)
+                {
+                    // one already exists, so we'll just use it.
+                    return;
+                }
+
+                if (m_dispatcherQueueController == null)
+                {
+                    DispatcherQueueOptions options;
+                    options.dwSize = Marshal.SizeOf(typeof(DispatcherQueueOptions));
+                    options.threadType = 2;    // DQTYPE_THREAD_CURRENT
+                    options.apartmentType = 2; // DQTAT_COM_STA
+
+                    CreateDispatcherQueueController(options, ref m_dispatcherQueueController);
+                }
+            }
+        }
+
+
+
         public class Taskbar
         {
             [DllImport("user32.dll")]
@@ -233,12 +337,10 @@ namespace Mehcan_EKilit
                 Border anahtar_gir_title_bar = new Border();
                 anahtar_gir_window.Title = "Anahtar Gir";
                 anahtar_gir_window.ExtendsContentIntoTitleBar = true;
-                SetWindowSize(hwnd_main, 1920, 1080, 3,false);
-                SetWindowSize(hwnd, 400, 400, 1,true);
-               
-                
-                
-                
+                SetWindowSize(hwnd_main, 1920, 1080, 3, false);
+                SetWindowSize(hwnd, 400, 400, 1, true);
+
+
                 anahtar_gir_window_presenter.IsResizable = false;
                 anahtar_gir_window_presenter.IsMaximizable = false;
                 anahtar_gir_window_presenter.IsMinimizable = false;
@@ -400,6 +502,9 @@ namespace Mehcan_EKilit
 
                 anahtar_gir_window.Content = ana_grid;
                 anahtar_gir_window.Activate();
+
+
+
                 void keypad_num_Click(object sender, RoutedEventArgs e, string number)
                 {
                     anahtar_textBox.Text += number;
@@ -410,7 +515,6 @@ namespace Mehcan_EKilit
                     {
                         anahtar_textBox.Text = anahtar_textBox.Text.Remove(anahtar_textBox.Text.Length - 1);
                     }
-
                 }
                 void keypad_tick_Click(object sender, RoutedEventArgs e, string text_box_text)
                 {
@@ -420,42 +524,39 @@ namespace Mehcan_EKilit
                         anahtar_gir_apwindow.Hide();
                         main_window.Hide();
                         is_anahtar_gir_open = false;
-                        SetWindowSize(hwnd_main,1920,1080,1,false);
+                        SetWindowSize(hwnd_main, 1920, 1080, 1, false);
                         is_opened_via_password = true;
                     }
                     anahtar_textBox.Text = "";
-                    
                 }
-
             }
-
         }
 
         private void Anahtar_gir_window_Closed(object sender, WindowEventArgs args)
         {
             is_anahtar_gir_open = false;
-            SetWindowSize(hwnd_main, 19520, 1080, 1,false);
+            SetWindowSize(hwnd_main, 19520, 1080, 1, false);
             throw new NotImplementedException();
         }
 
-        public void SetWindowSize(IntPtr hwnd, int width, int height,int istopmost,bool isdpiscalingenabled)
+        public void SetWindowSize(IntPtr hwnd, int width, int height, int istopmost, bool isdpiscalingenabled)
         {
-            if(isdpiscalingenabled)
+            if (isdpiscalingenabled)
             {
                 var dpi = PInvoke.User32.GetDpiForWindow(hwnd);
                 float scalingFactor = (float)dpi / 96;
                 width = (int)(width * scalingFactor);
                 height = (int)(height * scalingFactor);
             }
-            
-            
-            if(istopmost == 1)
+
+
+            if (istopmost == 1)
             {
                 PInvoke.User32.SetWindowPos(hwnd, PInvoke.User32.SpecialWindowHandles.HWND_TOPMOST,
                                         0, 0, width, height,
                                         PInvoke.User32.SetWindowPosFlags.SWP_NOMOVE);
             }
-            else if(istopmost == 2)
+            else if (istopmost == 2)
             {
                 PInvoke.User32.SetWindowPos(hwnd, PInvoke.User32.SpecialWindowHandles.HWND_TOP,
                                         0, 0, width, height,
@@ -470,7 +571,10 @@ namespace Mehcan_EKilit
 
 
         }
- 
+
+
+
+
         private void DeviceInsertedEvent(object sender, EventArrivedEventArgs e)
         {
             string current_letter = e.NewEvent.Properties["DriveName"].Value.ToString();
@@ -672,5 +776,7 @@ namespace Mehcan_EKilit
             }
             return null;
         }
+
+
     }
 }

@@ -34,6 +34,7 @@ namespace Mehcan_EKilit
         public App()
         {
             this.InitializeComponent();
+            
         }
 
         /// <summary>
@@ -97,11 +98,15 @@ namespace Mehcan_EKilit
         {
             m_window = new MainWindow();
             m_window.Activate();
+            
             Taskbar.Hide();
+           
             
 
         }
 
         private Window m_window;
+
+       
     }
 }

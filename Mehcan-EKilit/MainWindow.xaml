@@ -7,8 +7,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-
-
     <Grid x:Name="grid_main" Height="1080" VerticalAlignment="Bottom">
         <Button x:Name="ders_buton_sol_alt" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="87,0,0,5" >
             <StackPanel >
@@ -37,7 +35,7 @@
                 <TextBlock>Kapat</TextBlock>
             </StackPanel>
         </Button>
-        <Rectangle x:Name="ust_bolum_rect" RadiusX="10" RadiusY="10" Fill="#151515" HorizontalAlignment="Left" Height="124" Stroke="Black" VerticalAlignment="Top" Width="1500" RequestedTheme="Default" Margin="20,370,20,0" >
+        <Rectangle x:Name="ust_bolum_rect" RadiusX="10" RadiusY="10" Fill="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}" HorizontalAlignment="Left" Height="124" VerticalAlignment="Top" Width="1500" RequestedTheme="Default" Margin="20,370,20,0" >
             <Rectangle.Shadow>
                 <ThemeShadow />
             </Rectangle.Shadow>
@@ -48,4 +46,5 @@
         <TextBlock HorizontalAlignment="Center" Margin="0,467,0,0" TextWrapping="Wrap" Text="11/F" VerticalAlignment="Top" FontSize="18" />
        
     </Grid>
+
 </Window>

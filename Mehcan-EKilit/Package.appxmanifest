@@ -14,7 +14,7 @@
   <Identity
     Name="Mehcan.EKilit.Mdd"
     Publisher="CN=mdd Software, O=mdd Corporation, C=TR"
-    Version="1.0.5.0" />
+    Version="1.0.6.0" />
 
   <Properties>
     <DisplayName>Mehcan-EKilit</DisplayName>

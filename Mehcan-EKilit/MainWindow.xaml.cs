@@ -17,9 +17,14 @@ namespace Mehcan_EKilit
 
     public sealed partial class MainWindow : Window
     {
+        private const int GWL_STYLE = -16;
+        private const int WS_SYSMENU = 0x80000;
+
         List<string> teacher_device_ids = new List<string>();
         bool is_anahtar_gir_open;
         bool is_opened_via_password;
+        bool hided_automatically;
+        bool is_mini_window_opened;
         WindowsSystemDispatcherQueueHelper m_wsdqHelper; // See separate sample below for implementation
         Microsoft.UI.Composition.SystemBackdrops.MicaController m_micaController;
         Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController m_acrylicController;
@@ -60,6 +65,7 @@ namespace Mehcan_EKilit
             Lesson_timer.Interval = new TimeSpan(0, 0, 1);
             Lesson_timer.Start();
 
+           
             bgwDriveDetector.DoWork += bgwDriveDetector_DoWork;
             bgwDriveDetector.RunWorkerAsync();
 
@@ -137,13 +143,9 @@ namespace Mehcan_EKilit
                 device = device.Split(@"\")[0];
                 device = usbget.FindPath(device);
                 string current_device_letter = usbget.GetDriveLetter(device);
-                string location1 = current_device_letter + @"\mehcan.dat";
-                string location2 = current_device_letter + @"\BELGELER\mehcan.dat";
-                string location3 = current_device_letter + @"\mehcan00.dat";
-                string location4 = current_device_letter + @"\BELGELER\mehcan00.dat";
-                string location5 = current_device_letter + @"\mehcan0.dat";
-                string location6 = current_device_letter + @"\BELGELER\mehcan0.dat";
-                if (current_device_letter != null && (File.Exists(location1) || File.Exists(location2) || File.Exists(location3) || File.Exists(location4) || File.Exists(location5) || File.Exists(location6)))
+                string location1 = current_device_letter + @"\mehcan00.dat";
+                string location2 = current_device_letter + @"\BELGELER\mehcan00.dat";
+                if (current_device_letter != null && (File.Exists(location1) || File.Exists(location2)))
                 {
                     main_window.Hide();
                     Taskbar.Show();
@@ -161,36 +163,185 @@ namespace Mehcan_EKilit
         }
         private void Lesson_timer_Tick(object sender, object e)
         {
+           
             string time = DateTime.Now.ToString("HH:mm");
+            string day = DateTime.Now.DayOfWeek.ToString();
             string _time2 = time[0].ToString() + time[1].ToString() + time[3].ToString() + time[4].ToString();
             int time_3 = Int16.Parse(_time2);
-            if (0830 <= time_3 && time_3 < 910)
+
+            if (0830 <= time_3 && time_3 < 0910)
             {
-                ders_text.Text = "1.Ders";
+                if (day != DayOfWeek.Monday.ToString())
+                {
+                    main_window.Show();
+                    Taskbar.Hide();
+                    hided_automatically = false;
+                }
+                if (day == DayOfWeek.Monday.ToString())
+                {
+                    ders_text.Text = "1.Ders: Edebiyat";
+                    main_window.Hide();
+                    Taskbar.Show();
+                    hided_automatically = true;
+                }
+              
+                if (day == DayOfWeek.Tuesday.ToString())
+                {
+                    ders_text.Text = "1.Ders: Beden";
+                }
+                if (day == DayOfWeek.Wednesday.ToString())
+                {
+                    ders_text.Text = "1.Ders: Matematik";
+                }
+                if (day == DayOfWeek.Thursday.ToString())
+                {
+                    ders_text.Text = "1.Ders: Fizik <3";
+                }
+                if (day == DayOfWeek.Friday.ToString())
+                {
+                    ders_text.Text = "1.Ders: Kimya";
+                }
+                else
+                {
+                    ders_text.Text = "1.Ders";
+                }
+
             }
             else if (0910 <= time_3 && time_3 < 0920)
             {
+                if (hided_automatically)
+                {
+                    main_window.Show();
+                    Taskbar.Hide();
+                }
                 ders_text.Text = "1.Teneffüs";
             }
             else if (0920 <= time_3 && time_3 < 1000)
             {
-                ders_text.Text = "2.Ders";
+                if (day != DayOfWeek.Monday.ToString())
+                {
+                    main_window.Show();
+                    Taskbar.Hide();
+                    hided_automatically = false;
+                }
+                if (day == DayOfWeek.Monday.ToString())
+                {
+                    ders_text.Text = "2.Ders: Edebiyat";
+                    main_window.Hide();
+                    Taskbar.Show();
+                    hided_automatically = true;
+                }
+                if (day == DayOfWeek.Tuesday.ToString())
+                {
+                    ders_text.Text = "2.Ders: Beden";
+                }
+                if (day == DayOfWeek.Wednesday.ToString())
+                {
+                    ders_text.Text = "2.Ders: Edebiyat";
+                }
+                if (day == DayOfWeek.Thursday.ToString())
+                {
+                    ders_text.Text = "2.Ders: Fizik <3";
+                }
+                if (day == DayOfWeek.Friday.ToString())
+                {
+                    ders_text.Text = "2.Ders: Kimya";
+                }
+                else
+                {
+                    ders_text.Text = "2.Ders";
+                }
             }
             else if (1000 <= time_3 && time_3 < 1010)
             {
+                if (hided_automatically)
+                {
+                    main_window.Show();
+                    Taskbar.Hide();
+                }
                 ders_text.Text = "2.Teneffüs";
             }
             else if (1010 <= time_3 && time_3 < 1050)
             {
-                ders_text.Text = "3.Ders";
+                if (day != DayOfWeek.Thursday.ToString())
+                {
+                    main_window.Show();
+                    Taskbar.Hide();
+                    hided_automatically = false;
+                }
+                if (day == DayOfWeek.Monday.ToString())
+                {
+                    ders_text.Text = "3.Ders: İngilizce";
+                }
+                if (day == DayOfWeek.Tuesday.ToString())
+                {
+                    ders_text.Text = "3.Ders: Matematik";
+                }
+                if (day == DayOfWeek.Wednesday.ToString())
+                {
+                    ders_text.Text = "3.Ders: Almanca";
+                }
+                if (day == DayOfWeek.Thursday.ToString())
+                {
+                    ders_text.Text = "3.Ders: Edebiyat";
+                    main_window.Hide();
+                    Taskbar.Show();
+                    hided_automatically = true;
+                }
+                if (day == DayOfWeek.Friday.ToString())
+                {
+                    ders_text.Text = "3.Ders: Matematik";
+                }
+                else
+                {
+                    ders_text.Text = "3.Ders";
+                }
             }
             else if (1050 <= time_3 && time_3 < 1100)
             {
+                if (hided_automatically)
+                {
+                    main_window.Show();
+                    Taskbar.Hide();
+                }
                 ders_text.Text = "3.Teneffüs";
             }
             else if (1100 <= time_3 && time_3 < 1140)
             {
-                ders_text.Text = "4.Ders";
+                if (day != DayOfWeek.Thursday.ToString())
+                {
+                    main_window.Show();
+                    Taskbar.Hide();
+                    hided_automatically = false;
+                }
+
+                if (day == DayOfWeek.Monday.ToString())
+                {
+                    ders_text.Text = "4.Ders: İngilizce";
+                }
+                if (day == DayOfWeek.Tuesday.ToString())
+                {
+                    ders_text.Text = "4.Ders: Matematik";
+                }
+                if (day == DayOfWeek.Wednesday.ToString())
+                {
+                    ders_text.Text = "4.Ders: Almanca";
+                }
+                if (day == DayOfWeek.Thursday.ToString())
+                {
+                    ders_text.Text = "4.Ders: Edebiyat";
+                    main_window.Hide();
+                    Taskbar.Show();
+                    hided_automatically = true;
+                }
+                if (day == DayOfWeek.Friday.ToString())
+                {
+                    ders_text.Text = "4.Ders: Matematik";
+                }
+                else
+                {
+                    ders_text.Text = "4.Ders";
+                }
             }
             else if (1140 <= time_3 && time_3 < 1150)
             {
@@ -198,34 +349,162 @@ namespace Mehcan_EKilit
             }
             else if (1150 <= time_3 && time_3 < 1230)
             {
-                ders_text.Text = "5.Ders";
+                if (day == DayOfWeek.Monday.ToString())
+                {
+                    ders_text.Text = "5.Ders: İngilizce";
+                }
+                if (day == DayOfWeek.Tuesday.ToString())
+                {
+                    ders_text.Text = "5.Ders: Matematik";
+                }
+                if (day == DayOfWeek.Wednesday.ToString())
+                {
+                    ders_text.Text = "5.Ders: Almanca";
+                }
+                if (day == DayOfWeek.Thursday.ToString())
+                {
+                    ders_text.Text = "5.Ders: Matematik";
+                   
+                }
+                if (day == DayOfWeek.Friday.ToString())
+                {
+                    ders_text.Text = "5.Ders: İngilizce";
+                }
+                else
+                {
+                    ders_text.Text = "5.Ders";
+                }
             }
             else if (1230 <= time_3 && time_3 < 1330)
             {
+                if (hided_automatically)
+                {
+                    main_window.Show();
+                    Taskbar.Hide();
+                }
                 ders_text.Text = "Öğle Arası";
             }
             else if (1330 <= time_3 && time_3 < 1410)
             {
-                ders_text.Text = "6.Ders";
+                if (hided_automatically)
+                {
+                    main_window.Show();
+                    Taskbar.Hide();
+                }
+                if (day == DayOfWeek.Monday.ToString())
+                {
+                    ders_text.Text = "6.Ders: Fizik";
+                }
+                if (day == DayOfWeek.Tuesday.ToString())
+                {
+                    ders_text.Text = "6.Ders: Felsefe";
+                }
+                if (day == DayOfWeek.Wednesday.ToString())
+                {
+                    ders_text.Text = "6.Ders: Biyoloji";
+                }
+                if (day == DayOfWeek.Thursday.ToString())
+                {
+                    ders_text.Text = "6.Ders: Müzik";
+                }
+                if (day == DayOfWeek.Friday.ToString())
+                {
+                    ders_text.Text = "6.Ders: İngilizce";
+                }
+                else
+                {
+                    ders_text.Text = "6.Ders";
+                }
             }
             else if (1410 <= time_3 && time_3 < 1420)
             {
+                if (hided_automatically)
+                {
+                    main_window.Show();
+                    Taskbar.Hide();
+                }
                 ders_text.Text = "6.Teneffüs";
             }
             else if (1420 <= time_3 && time_3 < 1500)
             {
-                ders_text.Text = "7.Ders";
+                if(hided_automatically)
+                {
+                    main_window.Show();
+                    Taskbar.Hide();
+                }
+                if (DateTime.Now.DayOfWeek.ToString() == DayOfWeek.Monday.ToString())
+                {
+                    ders_text.Text = "7.Ders: Din";
+                }
+                if (DateTime.Now.DayOfWeek.ToString() == DayOfWeek.Tuesday.ToString())
+                {
+                    ders_text.Text = "7.Ders: Biyoloji";
+                }
+                if (DateTime.Now.DayOfWeek.ToString() == DayOfWeek.Wednesday.ToString())
+                {
+                    ders_text.Text = "7.Ders: Kimya";
+                }
+                if (DateTime.Now.DayOfWeek.ToString() == DayOfWeek.Thursday.ToString())
+                {
+                    ders_text.Text = "7.Ders: Müzik";
+                }
+                if (DateTime.Now.DayOfWeek.ToString() == DayOfWeek.Friday.ToString())
+                {
+                    ders_text.Text = "7.Ders: Tarih";
+                }
+                else
+                {
+                    ders_text.Text = "7.Ders";
+                }
             }
             else if (1500 <= time_3 && time_3 < 1510)
             {
+                if (hided_automatically)
+                {
+                    main_window.Show();
+                    Taskbar.Hide();
+                }
                 ders_text.Text = "7.Teneffüs";
             }
             else if (1510 <= time_3 && time_3 < 1550)
             {
-                ders_text.Text = "8.Ders";
+                if (hided_automatically)
+                {
+                    main_window.Show();
+                    Taskbar.Hide();
+                }
+                if (DateTime.Now.DayOfWeek.ToString() == DayOfWeek.Monday.ToString())
+                {
+                    ders_text.Text = "8.Ders: Din";
+                }
+                if (DateTime.Now.DayOfWeek.ToString() == DayOfWeek.Tuesday.ToString())
+                {
+                    ders_text.Text = "8.Ders: Biyoloji";
+                }
+                if (DateTime.Now.DayOfWeek.ToString() == DayOfWeek.Wednesday.ToString())
+                {
+                    ders_text.Text = "8.Ders: Kimya";
+                }
+                if (DateTime.Now.DayOfWeek.ToString() == DayOfWeek.Thursday.ToString())
+                {
+                    ders_text.Text = "8.Ders: Rehberlik";
+                }
+                if (DateTime.Now.DayOfWeek.ToString() == DayOfWeek.Friday.ToString())
+                {
+                    ders_text.Text = "8.Ders: Tarih";
+                }
+                else
+                {
+                    ders_text.Text = "8.Ders";
+                }
             }
             else
             {
+                if (hided_automatically)
+                {
+                    main_window.Show();
+                    Taskbar.Hide();
+                }
                 ders_text.Text = "Ders Dışı";
             }
 
@@ -329,6 +608,7 @@ namespace Mehcan_EKilit
             if (!is_anahtar_gir_open)
             {
                 is_anahtar_gir_open = true;
+                
                 var anahtar_gir_window = new Window();
                 var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(anahtar_gir_window);
                 WindowId myWndId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hwnd);
@@ -336,22 +616,21 @@ namespace Mehcan_EKilit
                 anahtar_gir_window_presenter = anahtar_gir_apwindow.Presenter as OverlappedPresenter;
                 Border anahtar_gir_title_bar = new Border();
                 anahtar_gir_window.Title = "Anahtar Gir";
+                anahtar_gir_apwindow.TitleBar.IconShowOptions = IconShowOptions.HideIconAndSystemMenu;
                 anahtar_gir_window.ExtendsContentIntoTitleBar = true;
                 SetWindowSize(hwnd_main, 1920, 1080, 3, false);
                 SetWindowSize(hwnd, 400, 400, 1, true);
-
 
                 anahtar_gir_window_presenter.IsResizable = false;
                 anahtar_gir_window_presenter.IsMaximizable = false;
                 anahtar_gir_window_presenter.IsMinimizable = false;
                 anahtar_gir_window_presenter.IsAlwaysOnTop = true;
-                anahtar_gir_window.Closed += Anahtar_gir_window_Closed;
 
                 Grid ana_grid = new Grid();
 
                 Grid alt_grid = new Grid();
                 alt_grid.Width = 200;
-                alt_grid.Height = 260;
+                alt_grid.Height = 300;
                 alt_grid.HorizontalAlignment = HorizontalAlignment.Right;
                 alt_grid.VerticalAlignment = VerticalAlignment.Center;
 
@@ -375,10 +654,10 @@ namespace Mehcan_EKilit
                 alt_grid.RowDefinitions.Add(rowDef4);
 
 
-                NumberBox anahtar_textBox = new NumberBox();
+                TextBox anahtar_textBox = new TextBox();
                 anahtar_textBox.FontSize = 23;
-                anahtar_textBox.Width = 198;
-                anahtar_textBox.Margin = new Thickness(0, 20, 23, 0);
+                anahtar_textBox.Width = 200;
+                anahtar_textBox.Margin = new Thickness(0, 30, 23, 0);
                 anahtar_textBox.VerticalAlignment = VerticalAlignment.Top;
                 anahtar_textBox.HorizontalAlignment = HorizontalAlignment.Right;
                 ana_grid.Children.Add(anahtar_textBox);
@@ -460,27 +739,30 @@ namespace Mehcan_EKilit
                 Button keypad0 = new Button();
                 keypad0.Content = "0";
                 keypad0.Width = 60;
-                keypad0.Height = 60;
+                keypad0.Height = 60;    
                 Grid.SetRow(keypad0, 3);
                 Grid.SetColumn(keypad0, 1);
                 keypad0.Click += (sender, EventArgs) => { keypad_num_Click(sender, EventArgs, "0"); };
 
-
-                Button keypad_tick = new Button();
-                keypad_tick.Content = ":)";
+                AppBarButton keypad_tick = new AppBarButton();
+                keypad_tick.Icon = new SymbolIcon(Symbol.Accept);
+                
                 keypad_tick.Width = 60;
-                keypad_tick.Height = 60;
+                keypad_tick.Height = 70;
+
                 Grid.SetRow(keypad_tick, 3);
                 Grid.SetColumn(keypad_tick, 2);
+                keypad_tick.Label = "Tamam";
                 keypad_tick.Click += (sender, EventArgs) => { keypad_tick_Click(sender, EventArgs, anahtar_textBox.Text); };
 
 
-                Button keypad_back = new Button();
-                keypad_back.Content = "<";
+                AppBarButton keypad_back = new AppBarButton();
+                keypad_back.Icon = new SymbolIcon(Symbol.Back);
                 keypad_back.Width = 60;
-                keypad_back.Height = 60;
+                keypad_back.Height = 70;
                 Grid.SetRow(keypad_back, 3);
                 Grid.SetColumn(keypad_back, 0);
+                keypad_back.Label = "Sil";
                 keypad_back.Click += back_button_Click;
 
 
@@ -496,11 +778,12 @@ namespace Mehcan_EKilit
                 alt_grid.Children.Add(keypad0);
                 alt_grid.Children.Add(keypad_tick);
                 alt_grid.Children.Add(keypad_back);
-                alt_grid.Margin = new Thickness(0, 30, 20, 0);
+                alt_grid.Margin = new Thickness(0, 55, 20, 0);
 
                 ana_grid.Children.Add(alt_grid);
 
                 anahtar_gir_window.Content = ana_grid;
+                anahtar_gir_window.Closed += Anahtar_gir_window_Closed;
                 anahtar_gir_window.Activate();
 
 
@@ -514,6 +797,8 @@ namespace Mehcan_EKilit
                     if (anahtar_textBox.Text.Length != 0)
                     {
                         anahtar_textBox.Text = anahtar_textBox.Text.Remove(anahtar_textBox.Text.Length - 1);
+                        anahtar_textBox.SelectionStart = anahtar_textBox.Text.Length;
+                        anahtar_textBox.SelectionLength = 0;
                     }
                 }
                 void keypad_tick_Click(object sender, RoutedEventArgs e, string text_box_text)
@@ -525,9 +810,44 @@ namespace Mehcan_EKilit
                         main_window.Hide();
                         is_anahtar_gir_open = false;
                         SetWindowSize(hwnd_main, 1920, 1080, 1, false);
-                        is_opened_via_password = true;
+
+                        Grid maingrid = new Grid();
+
+                        if(!is_mini_window_opened)
+                        {
+                            var mini_window = new Window();
+                            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(mini_window);
+                            WindowId myWndId = Win32Interop.GetWindowIdFromWindow(hwnd);
+                            var mini_window_appwindow = AppWindow.GetFromWindowId(myWndId);
+                            var mini_window_presenter = mini_window_appwindow.Presenter as OverlappedPresenter;
+                            mini_window.ExtendsContentIntoTitleBar = true;
+                            mini_window_presenter.IsResizable = false;
+                            mini_window_presenter.IsMaximizable = false;
+                            mini_window_presenter.IsMinimizable = true;
+                            mini_window_presenter.IsAlwaysOnTop = false;
+
+                            AppBarButton lock_btn = new AppBarButton();
+                            lock_btn.Icon = new SymbolIcon(Symbol.ProtectedDocument);
+                            lock_btn.Width = 60;
+                            lock_btn.Height = 60;
+                            lock_btn.Label = "Kilitle";
+                            lock_btn.Click += Lock_btn_Click;
+                            lock_btn.VerticalAlignment = VerticalAlignment.Center;
+                            lock_btn.HorizontalAlignment = HorizontalAlignment.Center;
+
+                            maingrid.Children.Add(lock_btn);
+
+                            mini_window.Content = maingrid;
+
+                            SetWindowSize(hwnd, 200, 200, 3, true);
+
+                            mini_window.Activate();
+                            is_mini_window_opened = true;
+                        }
+                        
                     }
                     anahtar_textBox.Text = "";
+
                 }
             }
         }
@@ -535,8 +855,16 @@ namespace Mehcan_EKilit
         private void Anahtar_gir_window_Closed(object sender, WindowEventArgs args)
         {
             is_anahtar_gir_open = false;
-            SetWindowSize(hwnd_main, 19520, 1080, 1, false);
-            throw new NotImplementedException();
+
+        }
+
+        private void Lock_btn_Click(object sender, RoutedEventArgs e)
+        {
+            main_window.Show();
+            Taskbar.Hide();
+            SetWindowSize(hwnd_main, 1920, 1080, 1, false);
+            is_opened_via_password = false;
+            is_anahtar_gir_open = false;
         }
 
         public void SetWindowSize(IntPtr hwnd, int width, int height, int istopmost, bool isdpiscalingenabled)
@@ -569,24 +897,15 @@ namespace Mehcan_EKilit
                                         PInvoke.User32.SetWindowPosFlags.SWP_NOMOVE);
             }
 
-
         }
-
-
-
-
         private void DeviceInsertedEvent(object sender, EventArrivedEventArgs e)
         {
             string current_letter = e.NewEvent.Properties["DriveName"].Value.ToString();
 
-            string location1 = current_letter + @"\mehcan.dat";
-            string location2 = current_letter + @"\BELGELER\mehcan.dat";
-            string location3 = current_letter + @"\mehcan00.dat";
-            string location4 = current_letter + @"\BELGELER\mehcan00.dat";
-            string location5 = current_letter + @"\mehcan0.dat";
-            string location6 = current_letter + @"\BELGELER\mehcan0.dat";
+            string location1 = current_letter + @"\mehcan00.dat";
+            string location2 = current_letter + @"\BELGELER\mehcan00.dat";
 
-            if (File.Exists(location1) || File.Exists(location2) || File.Exists(location3) || File.Exists(location4) || File.Exists(location5) || File.Exists(location6))
+            if (File.Exists(location1) || File.Exists(location2))
             {
                 main_window.Hide();
                 Taskbar.Show();
@@ -603,6 +922,7 @@ namespace Mehcan_EKilit
                     {
                         if (!teacher_device_ids.Contains(currentusb.DeviceId))
                         {
+                            is_opened_via_password = false;
                             teacher_device_ids.Add(currentusb.DeviceId);
                         }
                         break;
@@ -633,7 +953,7 @@ namespace Mehcan_EKilit
                     }
                 }
             }
-            if (paired_teacher_usb_ids.Count == 0 && is_opened_via_password != true)
+            if (paired_teacher_usb_ids.Count == 0)
             {
                 main_window.Show();
                 Taskbar.Hide();
@@ -720,6 +1040,7 @@ namespace Mehcan_EKilit
             var USBobjects = new List<string>();
             string Entity = "*none*";
 
+
             foreach (ManagementObject entity in new ManagementObjectSearcher(
                      $"select * from Win32_PnPEntity Where DeviceID Like '%{pattern}%'").Get())
             {
@@ -771,12 +1092,11 @@ namespace Mehcan_EKilit
 
             if (driveCount == 0)
             {
-                Debug.WriteLine("No drive identified!");
+                //Debug.WriteLine("No drive identified!");
                 return null;
             }
             return null;
         }
-
 
     }
 }
